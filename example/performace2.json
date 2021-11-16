@@ -1,0 +1,8 @@
+   {
+     "show": "objectId",
+     "auditorium":"objectId",
+      "sections": [
+        { "id":1,"name": "General","description":"General", "seats": 40,"price":100,"currency": "USD"}
+    ],
+    "date": "2021-11-25T19:00:00"
+}

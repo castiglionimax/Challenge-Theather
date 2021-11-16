@@ -1,0 +1,5 @@
+{
+    "performace": "ObjectID",
+    "person":{"dni": 32523291, "fullname": "Alexis Castiglioni"},
+    "sold":[{"seat": 5, "sectionId":"1"},{"seat": 6,"sectionId":"1"}]
+}
