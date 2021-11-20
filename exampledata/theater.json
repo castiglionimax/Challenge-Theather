@@ -1,0 +1,12 @@
+{ 
+    "theaterID": 1, 
+    "name": "Richard Rodgers Theatre",
+    "address":"214 W 42nd St, New York, NY 10036, United States",
+    "city": "New York",
+    "country": "United States",
+    "phone":"+1 866-870-2717", 
+    "auditoriums": [
+         {"name": "New York", "seats": 40},
+         {"name": "New Amsterdam", "seats": 200}
+    ]
+}

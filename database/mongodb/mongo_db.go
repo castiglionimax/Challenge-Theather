@@ -2,7 +2,6 @@ package mongodb
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"time"
 
@@ -10,9 +9,12 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const (
+	ULR = "mongodb+srv://dbAlexis:RENccHo22n8RuPDi@cluster0.rsjmz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+)
+
 var (
 	client *mongo.Client
-	ctx    context.Context
 	//password = os.Getenv("MongodbMeliShow")
 )
 
@@ -27,13 +29,7 @@ func init() {
 	//client, err = mongo.NewClient(options.Client().ApplyURI(b.String()))
 	client, err = mongo.NewClient(options.Client().ApplyURI("mongodb+srv://dbAlexis:RENccHo22n8RuPDi@cluster0.rsjmz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"))
 
-	if err != nil {
-		fmt.Print("aca salta")
-
-		log.Fatal(err)
-	}
-	fmt.Print("hasta aca vengo bien")
-	ctx, _ = context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	err = client.Connect(ctx)
 	if err != nil {
 		log.Fatal(err)
@@ -41,6 +37,6 @@ func init() {
 
 }
 
-func GetSession() (*mongo.Client, context.Context) {
-	return client, ctx
+func GetSession() *mongo.Client {
+	return client
 }

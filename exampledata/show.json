@@ -1,0 +1,7 @@
+{
+    "showID":1,
+    "name": "Aladdin",
+    "about": "BROADWAY MAGIC",
+    "cast":[{"person": "Michael James","As":"Genie"},{"person": "Jonathan Freeman","As": "Jafar"}],
+    "durationsMin": "180"
+  }

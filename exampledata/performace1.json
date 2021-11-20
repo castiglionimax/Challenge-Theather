@@ -1,6 +1,10 @@
    {
-     "show": "objectId",
-     "auditorium":"objectId",
+    "performaceID":1,
+    "showID":1,
+    "showName": "Aladdin",
+    "theaterID": 1,
+    "theaterName": "Richard Rodgers Theatre",
+    "auditorium":"New York",
       "sections": [
         { "id":1,"name": "Orchestra","description":"Row A", "seats": 10,"price":300,"currency": "USD"},
         { "id":2,"name": "Orchestra","description":"Row B", "seats": 10,"price":200,"currency": "USD"},

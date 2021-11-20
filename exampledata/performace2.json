@@ -1,0 +1,15 @@
+   {
+    "performanceID":2,
+    "showID":1,
+    "showName": "Aladdin",
+    "theaterID": 1,
+    "theaterName": "Richard Rodgers Theatre",
+    "city": "New York",
+    "auditorium":"New York",
+      "sections": [
+        { "id":1,"name": "General","description":"General",
+           "seats": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20],
+           "price":100,"currency": "USD"}
+    ],
+    "date": 1637877600
+}

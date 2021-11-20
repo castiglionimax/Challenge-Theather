@@ -1,0 +1,51 @@
+
+/*
+//GET performances/_search
+{ "query": {
+  "bool": {
+    "must": [
+      {"match":{"city":"new york"}}
+    ]
+  }
+}
+}
+//get precios
+//GET performances/_search
+{ 
+    "query": {
+  "bool": {
+    "must": [
+      {"match":{"performaceID":1}}
+    ],
+    "filter": [
+      {"range": {
+        "sections.price": {
+          "gte": 10,
+          "lte": 50
+        }
+      }}
+    ]
+  }
+}
+}
+
+//date
+GET performances/_search
+{ "query": {
+  "bool": {
+    "must": [
+      {"match":{"performaceID":1}}
+    ],
+    "filter": [
+      {"range": {
+        "date": {
+          "gte": "2021-11-08T21:30:00",
+          "lte": "2021-11-15T21:30:00"
+        }
+      }}
+    ]
+  }
+}
+}
+
+*/

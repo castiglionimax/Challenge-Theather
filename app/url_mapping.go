@@ -7,7 +7,9 @@ func mapUrls() {
 	router.GET("/ping", controllers.Ping)
 
 	// /performances?showname=Aladdin&start=2021-11-01T00:30&end=2021-11-30T00
-	router.GET("/performances", controllers.GetAllPerformances)
+	//	router.GET("/theater/{id}", controllers.GetTheater)
+
+	router.POST("/performances/search", controllers.Search)
 
 }
 
