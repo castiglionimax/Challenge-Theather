@@ -3,11 +3,11 @@ package performance
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"log"
-	"time"
 
 	"github.com/castiglionimax/MeliShows-Challenge/database/elastics"
-	"github.com/castiglionimax/MeliShows-Challenge/domain/queries"
+	"github.com/castiglionimax/MeliShows-Challenge/domain/pagination"
 	"github.com/castiglionimax/MeliShows-Challenge/utils/errors"
 )
 
@@ -15,12 +15,10 @@ const (
 	Index = "performances"
 )
 
-func (p *Performance) Search(query queries.EsQuery) ([]Performance, *errors.RestErr) {
+func (p *Performance) Search(query io.Reader, pagination *pagination.Pagination) ([]Performance, *errors.RestErr) {
 	var r map[string]interface{}
 
-	buf := query.BuildQuery()
-
-	res, err := elastics.Client.Search(buf)
+	res, err := elastics.Client.Search(query, pagination)
 
 	if err != nil {
 		return nil, errors.NewInternalServerError("error when trying to search documents")
@@ -39,28 +37,27 @@ func (p *Performance) Search(query queries.EsQuery) ([]Performance, *errors.Rest
 
 	performances := make([]Performance, int(r["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64)))
 
+	if len(performances) == 0 {
+		return nil, errors.NewNotFoundError("document not found")
+	}
+
 	for index, hit := range r["hits"].(map[string]interface{})["hits"].([]interface{}) {
 		performance := Performance{}
+
 		arrayByte, _ := json.Marshal(hit.(map[string]interface{})["_source"])
+
 		err := json.Unmarshal(arrayByte, &performance)
 		if err != nil {
 			log.Print(err)
 		}
 		//documento full sin _id
-		arrayByte, _ = json.Marshal(hit.(map[string]interface{})["_id"])
-		err = json.Unmarshal(arrayByte, &performance)
-		if err != nil {
-			log.Print(err)
-		}
+
+		j := fmt.Sprintf("%s", hit.(map[string]interface{})["_id"])
+		log.Printf("_id=%s", j)
+		performance.DocumentID = &j
 
 		//docuemnto con _id de elastic search
-		performance.Date = time.Unix(*performance.DateTimeStamp, 0)
-		performance.DateTimeStamp = nil
 
-		//deleting section out of range
-		p.ValidatePrice(query)
-
-		fmt.Println(performance)
 		performances[index] = performance
 	}
 	return performances, nil
@@ -69,11 +66,13 @@ func (p *Performance) Search(query queries.EsQuery) ([]Performance, *errors.Rest
 
 func (p *Performance) Put() *errors.RestErr {
 
+	Id := *p.DocumentID
+	p.DocumentID = nil
 	jsond, _ := json.Marshal(p)
 	myString := string(jsond)
-	fmt.Println(myString)
+	//fmt.Println(myString)
 
-	err := elastics.Client.Index(myString, Index, &p.DocumentID)
+	err := elastics.Client.Index(myString, Index, &Id)
 	if err != nil {
 		return errors.NewInternalServerError("error when trying to search documents")
 	}

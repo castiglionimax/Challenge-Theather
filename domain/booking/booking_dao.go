@@ -2,6 +2,7 @@ package booking
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 
 	"github.com/castiglionimax/MeliShows-Challenge/database/mongodb"
@@ -15,7 +16,7 @@ import (
 )
 
 const (
-	DATABASE_NAME       = "MelliShow"
+	DATABASE_NAME       = "MeliShows"
 	SCHEMA_BOOKINGS     = "bookings"
 	SCHEMA_PERFORMANCES = "performances"
 )
@@ -48,14 +49,21 @@ func (v *Booking) SaveMongo() *errors.RestErr {
 			return nil, err
 		}
 
-		performance := performance.Performance{}
+		//	performance := &performance.Performance{}
 
-		if err = performancesCollection.FindOne(
-			sessionContext,
-			bson.M{"performaceID": v.PerformanceID}).Decode(&performance); err != nil {
+		var performance performance.Performance
+		var z bson.M
+
+		err = performancesCollection.FindOne(sessionContext, bson.M{"performanceID": v.PerformanceID}).Decode(&z)
+		if err != nil {
 			return nil, err
 		}
+
+		arrayByte, _ := json.Marshal(z)
+
+		err = json.Unmarshal(arrayByte, &performance)
 		if err != nil {
+			log.Print(err.Error())
 			return nil, err
 		}
 
@@ -63,9 +71,9 @@ func (v *Booking) SaveMongo() *errors.RestErr {
 			performance.UpdateSeats(s.SectionID, s.Seat)
 		}
 
-		asd, err := performancesCollection.UpdateOne(
+		asd, err := performancesCollection.ReplaceOne(
 			sessionContext,
-			bson.M{"performaceID": v.PerformanceID},
+			bson.M{"performanceID": v.PerformanceID},
 			performance,
 		)
 
@@ -77,7 +85,6 @@ func (v *Booking) SaveMongo() *errors.RestErr {
 		return nil, nil
 	}
 
-	err = session.AbortTransaction(context.Background())
 	_, err = session.WithTransaction(context.Background(), callback, txnOpts)
 	if err != nil {
 		panic(err)

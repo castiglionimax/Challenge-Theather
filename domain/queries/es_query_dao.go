@@ -22,25 +22,25 @@ func (q EsQuery) BuildQuery() io.Reader {
 	b.WriteString(`"must": [`)
 	b.WriteString("\n")
 	if q.Equals != nil {
-		b.WriteString(q.BuildQueryMatch())
+		b.WriteString(q.buildQueryMatch())
 		if q.Range_date != nil || q.Range_price != nil || q.Range_date != nil {
 			b.WriteString(",\n")
 		}
 	}
 	if q.Range_date != nil {
-		b.WriteString(q.BuildQueryDate())
+		b.WriteString(q.buildQueryDate())
 		if q.Range_price != nil || q.Range_date != nil {
 			b.WriteString(",\n")
 		}
 	}
 	if q.Range_date != nil {
-		b.WriteString(q.BuildQueryDate())
+		b.WriteString(q.buildQueryDate())
 		if q.Range_price != nil {
 			b.WriteString(",\n")
 		}
 	}
 	if q.Range_price != nil {
-		b.WriteString(q.BuildQueryPrice())
+		b.WriteString(q.buildQueryPrice())
 	}
 
 	b.WriteString("]")
@@ -50,16 +50,16 @@ func (q EsQuery) BuildQuery() io.Reader {
 		b.WriteString("}\n")
 	} else {
 		b.WriteString("},\n")
-		b.WriteString(q.BuildQueryOrderby())
+		b.WriteString(q.buildQueryOrderby())
 	}
 
 	b.WriteString("}\n")
 
-	fmt.Printf(b.String())
+	//fmt.Printf(b.String())
 	return strings.NewReader(b.String())
 }
 
-func (q EsQuery) BuildQueryMatch() string {
+func (q EsQuery) buildQueryMatch() string {
 	var b strings.Builder
 
 	/*
@@ -84,7 +84,7 @@ func (q EsQuery) BuildQueryMatch() string {
 	return b.String()
 }
 
-func (q EsQuery) BuildQueryPrice() string {
+func (q EsQuery) buildQueryPrice() string {
 	var b strings.Builder
 
 	/*
@@ -120,7 +120,7 @@ func (q EsQuery) BuildQueryPrice() string {
 	return b.String()
 }
 
-func (q EsQuery) BuildQueryDate() string {
+func (q EsQuery) buildQueryDate() string {
 	var b strings.Builder
 
 	/*
@@ -147,7 +147,7 @@ func (q EsQuery) BuildQueryDate() string {
 	return b.String()
 }
 
-func (q EsQuery) BuildQueryOrderby() string {
+func (q EsQuery) buildQueryOrderby() string {
 	var b strings.Builder
 
 	/*
@@ -165,7 +165,7 @@ func (q EsQuery) BuildQueryOrderby() string {
 			b.WriteString(fmt.Sprintf(`{"%s" : {"order" : "%s"`, v.Field, v.Value))
 		}
 		if v.Field == "price" {
-			b.WriteString(BuildQueryOrderbyPrice(v))
+			b.WriteString(buildQueryOrderbyPrice(v))
 		} else {
 			b.WriteString(fmt.Sprintf(`{"%s.keyword" : {"order" : "%s"`, v.Field, v.Value))
 		}
@@ -184,7 +184,7 @@ func (q EsQuery) BuildQueryOrderby() string {
 	return b.String()
 }
 
-func BuildQueryOrderbyPrice(q FieldValueOrder) string {
+func buildQueryOrderbyPrice(q FieldValueOrder) string {
 	var b strings.Builder
 	/*
 	   {
@@ -211,7 +211,7 @@ func BuildQueryOrderbyPrice(q FieldValueOrder) string {
 
 }
 
-func (q EsQuery) BuildQueryID() string {
+func (q EsQuery) BuildQueryID() io.Reader {
 	var b strings.Builder
 	b.WriteString("\n")
 	/*	{"query": {  "match": {
@@ -221,8 +221,21 @@ func (q EsQuery) BuildQueryID() string {
 	*/
 
 	b.WriteString(`{"query": {  "match": {`)
-	b.WriteString(fmt.Sprintf(`"%s": %d`, q.Id.Field, q.Id.Field))
+	b.WriteString(fmt.Sprintf(`"%s": %d`, q.Id.Field, q.Id.Value))
 	b.WriteString(`}}}`)
 
-	return b.String()
+	return strings.NewReader(b.String())
+}
+
+func (q EsQuery) BuildQueryMatchAll() io.Reader {
+
+	var b strings.Builder
+	b.WriteString("\n")
+	/*
+	   {"query": {"match_all": {}}}
+	*/
+
+	b.WriteString(`{"query": {"match_all": {}}}`)
+
+	return strings.NewReader(b.String())
 }
