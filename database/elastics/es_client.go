@@ -3,19 +3,19 @@ package elastics
 import (
 	"context"
 	"encoding/json"
+	"io"
 	"log"
 	"strings"
 
-	"github.com/castiglionimax/MeliShows-Challenge/domain/queries"
-	"github.com/castiglionimax/MeliShows-Challenge/utils/errors"
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/esapi"
 )
 
 //export ELASTIC_HOSTS=asasdaee
 const (
-	envEsHosts = "ELASTIC_HOSTS"
-	Index      = "performances"
+	envEsHosts      = "ELASTIC_HOSTS"
+	IndexPerfomance = "performances"
+	IndexBooking    = "bookings"
 )
 
 var (
@@ -24,9 +24,8 @@ var (
 
 type esClientInterface interface {
 	setClient(client *elasticsearch.Client)
-	//Get(index string, docType string, id string) (*elastic.GetResult, error)
-	//Search(string, elastic.Query) (*elastic.SearchResult, error)
-	Search(queryIn queries.EsQuery) (*esapi.Response, *errors.RestErr)
+	Index(b string, indexInput string, DocumentIDinput *string) error
+	Search(buf io.Reader) (*esapi.Response, error)
 }
 
 type esClient struct {
@@ -71,35 +70,50 @@ func (c *esClient) setClient(client *elasticsearch.Client) {
 	c.es = client
 }
 
-func (c *esClient) Search(queryIn queries.EsQuery) (*esapi.Response, *errors.RestErr) {
-
-	/*
-		var buf bytes.Buffer
-		query := map[string]interface{}{
-			"query": map[string]interface{}{
-				"match": map[string]interface{}{
-					"city": "New York",
-				},
-			},
-		}
-		if err := json.NewEncoder(&buf).Encode(query); err != nil {
-			log.Fatalf("Error encoding query: %s", err)
-		}
-	*/
-	// Perform the search request.
-	//buf := queryIn.Build()
-	buf := queryIn.BuildQuery()
+func (c *esClient) Search(buf io.Reader) (*esapi.Response, error) {
 
 	res, err := c.es.Search(
 		c.es.Search.WithContext(context.Background()),
-		c.es.Search.WithIndex(Index),
+		c.es.Search.WithIndex(IndexPerfomance),
 		c.es.Search.WithBody(buf),
 		c.es.Search.WithTrackTotalHits(true),
 		c.es.Search.WithPretty(),
 	)
 	if err != nil {
 		log.Fatalf("Error getting response: %s", err)
+		return nil, err
 	}
 
 	return res, nil
+}
+
+func (c *esClient) Index(b string, indexInput string, DocumentIDinput *string) error {
+
+	req := esapi.IndexRequest{}
+	if DocumentIDinput == nil {
+		// Set up the request object.
+		req = esapi.IndexRequest{
+			Index:   indexInput,
+			Body:    strings.NewReader(b),
+			Refresh: "true",
+		}
+	} else {
+		// Set up the request object.
+		req = esapi.IndexRequest{
+			Index:      indexInput,
+			DocumentID: *DocumentIDinput,
+			Body:       strings.NewReader(b),
+			Refresh:    "true",
+		}
+	}
+
+	// Perform the request with the client.
+	res, err := req.Do(context.Background(), c.es)
+	if err != nil {
+		log.Fatalf("Error getting response: %s", err)
+		return err
+	}
+	defer res.Body.Close()
+
+	return nil
 }

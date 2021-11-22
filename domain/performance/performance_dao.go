@@ -2,6 +2,7 @@ package performance
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"time"
 
@@ -10,43 +11,16 @@ import (
 	"github.com/castiglionimax/MeliShows-Challenge/utils/errors"
 )
 
-/*
-func (p *Performance) GetAllbyShowName() ([]*Performance, error) {
+const (
+	Index = "performances"
+)
 
-	var performanceCollections []*Performance
-	client := mongodb.GetSession()
-
-	meliCollection := client.Database("MeliShows")
-	//	performacesCollection := meliCollection.Collection("performace")
-
-	performacesCollection := meliCollection.Collection("performace")
-
-	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
-	cursor, err := performacesCollection.Find(ctx, bson.M{})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	defer cursor.Close(ctx)
-	for cursor.Next(ctx) {
-		var perforquery Performance
-		if err = cursor.Decode(&perforquery); err != nil {
-			log.Fatal(err)
-		}
-		performanceCollections = append(performanceCollections, &perforquery)
-	}
-	if err := cursor.Err(); err != nil {
-		return nil, err
-	}
-	defer client.Disconnect(ctx)
-	return performanceCollections, nil
-}
-
-//{createdAt:{$gte:ISODate("2021-01-01"),$lt:ISODate("2022-05-01"}}
-*/
 func (p *Performance) Search(query queries.EsQuery) ([]Performance, *errors.RestErr) {
 	var r map[string]interface{}
-	res, err := elastics.Client.Search(query)
+
+	buf := query.BuildQuery()
+
+	res, err := elastics.Client.Search(buf)
 
 	if err != nil {
 		return nil, errors.NewInternalServerError("error when trying to search documents")
@@ -72,11 +46,37 @@ func (p *Performance) Search(query queries.EsQuery) ([]Performance, *errors.Rest
 		if err != nil {
 			log.Print(err)
 		}
+		//documento full sin _id
+		arrayByte, _ = json.Marshal(hit.(map[string]interface{})["_id"])
+		err = json.Unmarshal(arrayByte, &performance)
+		if err != nil {
+			log.Print(err)
+		}
+
+		//docuemnto con _id de elastic search
 		performance.Date = time.Unix(*performance.DateTimeStamp, 0)
 		performance.DateTimeStamp = nil
 
+		//deleting section out of range
+		p.ValidatePrice(query)
+
+		fmt.Println(performance)
 		performances[index] = performance
 	}
 	return performances, nil
 
+}
+
+func (p *Performance) Put() *errors.RestErr {
+
+	jsond, _ := json.Marshal(p)
+	myString := string(jsond)
+	fmt.Println(myString)
+
+	err := elastics.Client.Index(myString, Index, &p.DocumentID)
+	if err != nil {
+		return errors.NewInternalServerError("error when trying to search documents")
+	}
+
+	return nil
 }

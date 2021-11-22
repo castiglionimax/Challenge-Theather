@@ -1,15 +1,15 @@
-   {
-    "performaceID":1,
-    "showID":1,
-    "showName": "Aladdin",
-    "theaterID": 1,
-    "theaterName": "Richard Rodgers Theatre",
-    "auditorium":"New York",
-      "sections": [
-        { "id":1,"name": "Orchestra","description":"Row A", "seats": 10,"price":300,"currency": "USD"},
-        { "id":2,"name": "Orchestra","description":"Row B", "seats": 10,"price":200,"currency": "USD"},
-        { "id":3,"name": "Mezzanine","description":"General", "seats": 10,"price":110,"currency": "USD"},
-        { "id":4,"name": "Balcony","description":"General", "seats": 10,"price":50,"currency": "USD"}
-    ],
-    "date": "2021-11-13T21:30:00"
+{
+  "performanceID":3,
+  "showID":2,
+  "showName": "Buenos Aires Philharmonic Orchestra: Concert 12",
+  "theaterID": 1,
+  "theaterName": "Teatro Colon",
+  "city": "Buenos Aires",
+  "auditorium":"Francesco Tamburini",
+    "sections": [
+      { "id":1,"name": "General","description":"General",
+         "seats": [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,19,20],
+         "price":100.00,"currency": "USD"}
+  ],
+  "date": 1637359200
 }

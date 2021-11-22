@@ -1,27 +1,17 @@
 package app
 
-import "github.com/castiglionimax/MeliShows-Challenge/controllers"
+import (
+	"github.com/castiglionimax/MeliShows-Challenge/controllers/bookings"
+	"github.com/castiglionimax/MeliShows-Challenge/controllers/performances"
+	"github.com/castiglionimax/MeliShows-Challenge/controllers/ping"
+)
 
 func mapUrls() {
-	//router.POST("/theter")
-	router.GET("/ping", controllers.Ping)
+	router.GET("/ping", ping.Ping)
 
-	// /performances?showname=Aladdin&start=2021-11-01T00:30&end=2021-11-30T00
 	//	router.GET("/theater/{id}", controllers.GetTheater)
 
-	router.POST("/performances/search", controllers.Search)
+	router.POST("/performances/search", performances.Search)
+	router.POST("/bookings/", bookings.Create)
 
 }
-
-//router.GET("minesweeper/users/:user_id/games/:game_id/solution",
-
-//	router.GET("minesweeper/users/:user_id/games",
-
-/*
-	 ISO 8601 UTC
-	YYYY-MM-DD
-	YYYY-MM-DDThh:mm<TZDSuffix>
-	YYYY-MM-DDThh:mm:ss<TZDSuffix>
-
-		// YYYY-MM-DDThh:mm:ss.sTZD. date
-*/

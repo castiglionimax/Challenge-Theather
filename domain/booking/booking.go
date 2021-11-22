@@ -1,19 +1,17 @@
 package booking
 
-import "github.com/castiglionimax/MeliShows-Challenge/domain/performance"
-
 type Booking struct {
-	Performace performance.Performance `json:"performace"`
-	Person     Person                  `json:"person"`
-	Sold       []Sold                  `json:"sold"`
+	PerformanceID int64  `json:"performaceID" bson:"performaceID"`
+	Person        Person `json:"person" bson:"person"`
+	Sold          []Sold `json:"sold" bson:"sold"`
 }
 
 type Sold struct {
-	Seat    int                 `json:"seat"`
-	Section performance.Section `json:"section"sectionId"`
+	Seat      int   `json:"seat" bson:"seat"`
+	SectionID int64 `json:"sectionID" bson:"sectionID"`
 }
 
 type Person struct {
-	Dni      int    `json:"dni"`
-	Fullname string `json:"fullname"`
+	Dni      int    `json:"dni" bson:"dni"`
+	FullName string `json:"fullname" bson:"fullname"`
 }
