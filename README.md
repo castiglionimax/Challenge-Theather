@@ -40,7 +40,7 @@ Rest verb: POST
 #### Ejemplos
 
 - Body
-```
+``
 {
 	"equals":[
 		{
@@ -75,15 +75,12 @@ Rest verb: POST
 ```
 - Responses:
   - 500: StatusInternalServerError
-    ```
     {
         "message": "error when trying to search documents",
         "error": "internal_server",
         "status": 500
     }
-    ```
     - 404: StatusNotFound 
-    ```
     {
       
            "message": "error when trying to search documents",
@@ -91,10 +88,8 @@ Rest verb: POST
             "status": 404
 
     }
-    ```
     -  400:	StatusBadRequest  
 
-    ```
   {
       
         "message": "error when trying to search documents",
@@ -102,18 +97,14 @@ Rest verb: POST
         "status": 400
 
     }
-  ```
     - 404: StatusNotFound 
-    ```
     {
         "message": "error, seat %d in the section %d is not found"
         "error": "Not_Found_Error",
         "status": 404
     }
-    ```
     -  400:	StatusBadRequest  
 
-    ```
   {
       
         "message": invalid json body",
@@ -121,7 +112,7 @@ Rest verb: POST
         "status": 400
 
     }
-    ```
+  ```
 ### Bookings
 Path: /bookings
 Rest verb: POST
@@ -130,17 +121,18 @@ Rest verb: POST
 #### Ejemplos
 
 - Body
-    ```
-
+```
 {
     "performanceID":1,
     "person":{"dni":32523291, "fullname": "Alexis Castiglioni"},
     "sold":[{"seat":3, "sectionId":1},{"seat":3,"sectionId":3}]
 }
-    ```
+```
+
 - Responses
-    ```
+    
   - 200: Created
+```
 {
     "performanceID": 1,
     "person": {
@@ -161,10 +153,8 @@ Rest verb: POST
     ],
     "total_price": 410
 }
-    ```
     -  400:	StatusBadRequest  
 
-    ```
   {
       
         "message": "invalid request body",
@@ -172,11 +162,9 @@ Rest verb: POST
         "status": 400
 
     }
-  ```
-      ```
+      
     -  400:	StatusBadRequest  
 
-    ```
   {
       
         "message": "invalid json body",
@@ -184,19 +172,15 @@ Rest verb: POST
         "status": 400
 
     }
-  ```
 
-    ```
+    
       - 500: StatusInternalServerError
-    ```
     {
         "message": "error when trying to search documents",
         "error": "internal_server",
         "status": 500
     }
-    ```
     - 404: StatusNotFound 
-    ```
     {
       
            "message": "error when trying to search documents",
@@ -204,12 +188,8 @@ Rest verb: POST
             "status": 404
 
     }
-    ```
-
-  
     -  400:	StatusBadRequest  
 
-    ```
   {
       
         "message": invalid json body",
@@ -217,4 +197,4 @@ Rest verb: POST
         "status": 400
 
     }
-    ```
+```
