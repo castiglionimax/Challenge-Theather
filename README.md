@@ -40,7 +40,7 @@ Rest verb: POST
 #### Ejemplos
 
 - Body
-``
+```
 {
 	"equals":[
 		{
