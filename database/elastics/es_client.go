@@ -81,7 +81,7 @@ func (c *esClient) Search(buf io.Reader, pag *pagination.Pagination) (*esapi.Res
 		offset int
 		errPag error
 	)
-	if pag != nil {
+	if pag == nil {
 		limit = Limit
 		offset = Offset
 
