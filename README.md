@@ -3,40 +3,38 @@
 ## Decisiones
 - El projecto fue desarrolado en Golang utilizado [Gin](https://github.com/gin-gonic/gin).
 - Se persiste los datos en base de datos MongoDB y se utiliza el conector [MongoDB Golang Driver](https://github.com/mongodb/mongo-go-driver).
-- Las busquedas se desarrollan en Elasticsearch y se utiliza el conector oficial [go-elasticsearch] (https://github.com/elastic/go-elasticsearch).
-- Se realizó un in-memory cache con  [TTLCache] (https://github.com/ReneKroon/ttlcache) con tu TTL de 60 seg o un POST de booking, lo que ocurra primero. 
+- Las busquedas se desarrollan en Elasticsearch y se utiliza el conector oficial [go-elasticsearch](https://github.com/elastic/go-elasticsearch).
+- Se realizó un in-memory cache con  [TTLCache](https://github.com/ReneKroon/ttlcache).
 
 ## Observaciones
-- Las busquedas se desarrollan en Elasticsearch y se persiste el documento de funciones tanto en Mongo como en elasticsearch.
-- Cada reserva se lo toma como una transaccion, por lo tanto si falla la actualización en Elasticserch o en Mongo la reserva no se hace.
-- Las busquedas realizan haciendo un metodo POST y creado un body en json para darle mas flexibildad a la busqueda. Dejando la opcion de realizar mas busquedas a nuevos criterios a futuro.
-- Las busquedas seran guardas en un in-memory cache con un hash en sha1 para posteriormente compararlas y obtener inequivocamente el resultado correcto, el cual tambien está cacheado.
+- Las busquedas se desarrollan en Elasticsearch y se persiste el documento de funciones en MongoDB.
+- Cada reserva se lo toma como una transaccion, por lo tanto si falla la actualización en Elasticserch o en MongoDB la reserva no se hace.
+- Se expone un endpoint que brinda mas flexibildad a la busqueda. Dejando la opcion de realizar más busquedas a futuro por nuevos criterios.
+- Las busquedas serán guardas en un in-memory cache con un hash en sha1 para posteriormente compararlas y obtener inequivocamente el resultado correcto, el cual tambien está cacheado.
 
-## List of Endpoints
+## Listado de Endpoint
 - Base URL: MeliShows-Challenge-dev.us-west-1.elasticbeanstalk.com
 
-Path: /performaces/search
-Rest verb: POST
+POST /performaces/search
 
-### POST Busquedas
-#### Atributos URL
+#### Atributos 
 - Para obtener datos entre 1 a 50 hacer:
-- - https://..../performances/search?limit=25&offset=50
-- - offset= 1 significa obtener el 1 documento
-- - limit= 10 la cantidad a devolver
+- https://..../performances/search?limit=25&offset=50
+- offset= 1 ->  obtener el primer documento
+- limit= 50 ->  cantidad a devolver
 #### Atributos Body
 - "equals" Array
-- - field: key con el nombre del atributo en el documento performances 
-- - Value: valor buscado
--	"range_price"
-- - from": precio inicial
-- - "to":  precio final
+- field: key con el nombre del atributo en el documento performances 
+- Value: valor buscado
+- "range_price"
+- from": precio inicial
+- "to":  precio final
 - "orderby": Array. Puede ordenar por mas de un atributo
-- -  "field": key con el nombre del atributo en el documento performances 
-- -  "value":"asc" para ascendente o "des" para descendente 
-- 	"Range_date":  en Timestamp
-		"from":1632356338 (seg)
-    "to":1637616062
+- "field": key con el nombre del atributo en el documento performances 
+- "value":"asc" para ascendente o "des" para descendente 
+- "Range_date":  en Timestamp
+- "from":1632356338 (seg)
+- "to":1637616062
 	
 #### Ejemplos
 
@@ -45,29 +43,28 @@ Rest verb: POST
 {
 	"equals":[
 		{
-	    	"field":"showName",
-        "value":"Aladdin"
+		"field":"showName",
+		"value":"Aladdin"
 		},
 		{
-	    	"field":"city",
-        "value":"New York"
+		"field":"city",
+		"value":"New York"
 		}
     	],
 	"range_price":{
 	    	"from":1,
-		    "to":300
+        	"to":300
 	},
       	"orderby":[
         	{
-		        "field":"price",
-             "value":"asc"
+	         "field":"price",
+             	 "value":"asc"
 	      	}
 	    ],
 	"Range_date":{
-		      	"from":1632356338,
-			      "to":1637616062
-	}
-	
+		 "from":1632356338,
+		 "to":1637616062
+	}	
 }
 
 ```
@@ -92,7 +89,6 @@ Rest verb: POST
     -  400:	StatusBadRequest  
 
   {
-      
         "message": "error when trying to search documents",
         "error": "bad_request",
         "status": 400
@@ -115,9 +111,8 @@ Rest verb: POST
     }
   ```
 ### Bookings
-Path: /bookings
-Rest verb: POST
 
+POST /bookings
 
 #### Ejemplos
 
@@ -125,7 +120,7 @@ Rest verb: POST
 ```
 {
     "performanceID":1,
-    "person":{"dni":32523291, "fullname": "Alexis Castiglioni"},
+    "person":{"dni":31233231, "fullname": "Alfred Molina"},
     "sold":[{"seat":3, "sectionId":1},{"seat":3,"sectionId":3}]
 }
 ```
@@ -154,6 +149,7 @@ Rest verb: POST
     ],
     "total_price": 410
 }
+
     -  400:	StatusBadRequest  
 
   {
