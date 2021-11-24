@@ -17,3 +17,7 @@
 go.mod
 .vscode
 .exampledata
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
