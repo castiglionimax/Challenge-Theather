@@ -21,7 +21,7 @@ Rest verb: POST
 ### POST Busquedas
 #### Atributos URL
 - Para obtener datos entre 1 a 50 hacer:
-- - https://xxxxx:50000/performances/search?limit=25&offset=50
+- - https://..../performances/search?limit=25&offset=50
 - - offset= 1 significa obtener el 1 documento
 - - limit= 10 la cantidad a devolver
 #### Atributos Body
@@ -132,8 +132,8 @@ Rest verb: POST
 
 - Responses
     
+    ```
   - 200: Created
-```
 {
     "performanceID": 1,
     "person": {
