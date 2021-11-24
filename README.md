@@ -4,15 +4,16 @@
 - El projecto fue desarrolado en Golang utilizado [Gin](https://github.com/gin-gonic/gin).
 - Se persiste los datos en base de datos MongoDB y se utiliza el conector [MongoDB Golang Driver](https://github.com/mongodb/mongo-go-driver).
 - Las busquedas se desarrollan en Elasticsearch y se utiliza el conector oficial [go-elasticsearch] (https://github.com/elastic/go-elasticsearch).
-- El projecto esta hosteado en una privete subnet de AWS en un nodo de EC(todos son singles nodo en docker), por lo tanto el entorno esta preparado para escalar pero esta opción no está habilitada.
+- Se realizó un in-memory cache con  [TTLCache] (https://github.com/ReneKroon/ttlcache) con tu TTL de 60 seg o un POST de booking, lo que ocurra primero. 
 
 ## Observaciones
 - Las busquedas se desarrollan en Elasticsearch y se persiste el documento de funciones tanto en Mongo como en elasticsearch.
 - Cada reserva se lo toma como una transaccion, por lo tanto si falla la actualización en Elasticserch o en Mongo la reserva no se hace.
 - Las busquedas realizan haciendo un metodo POST y creado un body en json para darle mas flexibildad a la busqueda. Dejando la opcion de realizar mas busquedas a nuevos criterios a futuro.
+- Las busquedas seran guardas en un in-memory cache con un hash en sha1 para posteriormente compararlas y obtener inequivocamente el resultado correcto, el cual tambien está cacheado.
 
 ## List of Endpoints
-- Base URL: http://xxxxx:50000
+- Base URL: Melishow-env.eba-mgripc2z.us-east-2.elasticbeanstalk.com
 
 Path: /performaces/search
 Rest verb: POST
@@ -198,3 +199,130 @@ Rest verb: POST
 
     }
 ```
+## Elasticsearch
+### Mapping
+- Es importante esto porque el array es del tipo nested
+```
+{
+    "mappings" : {
+      "properties" : {
+        "auditorium" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "city" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "date" : {
+          "type" : "long"
+        },
+        "dateShow" : {
+          "type" : "date"
+        },
+        "performanceID" : {
+          "type" : "long"
+        },
+        "sections" : {
+          "type" : "nested",
+          "properties" : {
+            "currency" : {
+              "type" : "text",
+              "fields" : {
+                "keyword" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                }
+              }
+            },
+            "description" : {
+              "type" : "text",
+              "fields" : {
+                "keyword" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                }
+              }
+            },
+            "id" : {
+              "type" : "long"
+            },
+            "name" : {
+              "type" : "text",
+              "fields" : {
+                "keyword" : {
+                  "type" : "keyword",
+                  "ignore_above" : 256
+                }
+              }
+            },
+            "price" : {
+              "type" : "long"
+            },
+            "seats" : {
+              "type" : "long"
+            }
+          }
+        },
+        "showID" : {
+          "type" : "long"
+        },
+        "showName" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        },
+        "theaterID" : {
+          "type" : "long"
+        },
+        "theaterName" : {
+          "type" : "text",
+          "fields" : {
+            "keyword" : {
+              "type" : "keyword",
+              "ignore_above" : 256
+            }
+          }
+        }
+      }
+    }
+  }
+```
+
+## Documentos
+### Peformance EXAMPLES
+
+```
+ {
+     "performanceID":1,
+    "showID":1,
+    "showName": "Aladdin",
+    "theaterID": 1,
+    "theaterName": "Richard Rodgers Theatre",
+    "city": "New York",
+    "auditorium":"New York",
+    "sections": [
+        { "id":1,"name": "OrchestraA","description":"Row A", "seats": [1,2,3,4,5,6,7,8,9,10],"price":300.00,"currency": "USD"},
+        { "id":2,"name": "Mezzanine","description":"General", "seats": [1,2,3,4,5,6,7,8,9,10],"price":110.00,"currency": "USD"},
+        { "id":3,"name": "Balcony","description":"General", "seats": [1,2,3,4,5,6,7,8,9,10],"price":50.00,"currency": "USD"}
+    ],
+    "date": 1636581600
+}
+```
+
+
+

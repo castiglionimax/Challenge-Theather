@@ -37,6 +37,8 @@ func (p *Performance) Search(query io.Reader, pagination *pagination.Pagination)
 
 	performances := make([]Performance, int(r["hits"].(map[string]interface{})["total"].(map[string]interface{})["value"].(float64)))
 
+	fmt.Print(r["hits"].(map[string]interface{})["hits"].([]interface{}))
+
 	if len(performances) == 0 {
 		return nil, errors.NewNotFoundError("document not found")
 	}

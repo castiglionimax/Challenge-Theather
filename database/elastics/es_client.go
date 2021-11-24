@@ -5,15 +5,16 @@ import (
 	"encoding/json"
 	"io"
 	"log"
+	"os"
 	"strconv"
 	"strings"
 
 	"github.com/castiglionimax/MeliShows-Challenge/domain/pagination"
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/esapi"
+	"github.com/joho/godotenv"
 )
 
-//export ELASTIC_HOSTS=asasdaee
 const (
 	envEsHosts      = "ELASTIC_HOSTS"
 	IndexPerfomance = "performances"
@@ -42,10 +43,18 @@ func Init() {
 		err error
 	)
 
+	errxa := godotenv.Load()
+	if errxa != nil {
+		log.Fatal("Error loading .env file")
+	}
+	URL := os.Getenv("URL_ELASTICSEARCH")
+
 	cfg := elasticsearch.Config{
 		Addresses: []string{
-			"http://localhost:9200",
+			URL,
 		},
+		Username: os.Getenv("USERNAME_ELASTICSEARCH"),
+		Password: os.Getenv("PASSWORD_ELASTICSEARCH"),
 	}
 	es, err := elasticsearch.NewClient(cfg)
 
@@ -96,11 +105,14 @@ func (c *esClient) Search(buf io.Reader, pag *pagination.Pagination) (*esapi.Res
 		}
 	}
 
+	_ = offset
+	_ = limit
+
 	res, err := c.es.Search(
 		c.es.Search.WithContext(context.Background()),
 		c.es.Search.WithIndex(IndexPerfomance),
-		c.es.Search.WithFrom(offset),
-		c.es.Search.WithSize(limit),
+		//		c.es.Search.WithFrom(offset),
+		//		c.es.Search.WithSize(limit),
 		c.es.Search.WithBody(buf),
 		c.es.Search.WithTrackTotalHits(true),
 		c.es.Search.WithPretty(),

@@ -2,25 +2,34 @@ package mongodb
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"os"
 	"time"
 
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 const (
-	URL          = "mongodb+srv://dbAlexis:RENccHo22n8RuPDi@cluster0.rsjmz.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 	IndexBooking = "bookings"
 )
 
 var (
 	client *mongo.Client
-	//password = os.Getenv("MongodbMeliShow")
 )
 
 func init() {
 	var err error
+
+	errxa := godotenv.Load()
+	if errxa != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	URL := os.Getenv("URL_MONGODB")
+	fmt.Println(URL)
 
 	client, err = mongo.NewClient(options.Client().ApplyURI(URL))
 

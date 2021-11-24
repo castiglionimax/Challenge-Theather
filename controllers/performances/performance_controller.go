@@ -1,9 +1,15 @@
 package performances
 
 import (
+	"crypto/sha1"
+	"encoding/hex"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
+
+	"github.com/castiglionimax/MeliShows-Challenge/cacheinmem"
 
 	"github.com/castiglionimax/MeliShows-Challenge/domain/pagination"
 	"github.com/castiglionimax/MeliShows-Challenge/domain/performance"
@@ -28,10 +34,24 @@ func Search(c *gin.Context) {
 		performancesFound []performance.Performance
 		errRest           *errors.RestErr
 		pagination        pagination.Pagination
+		b                 strings.Builder
 	)
 
 	pagination.Limit = c.DefaultQuery("limit", "100")
 	pagination.Offset = c.DefaultQuery("offset", "0")
+	h := sha1.New()
+
+	h.Write(bytes)
+
+	b.WriteString(hex.EncodeToString(h.Sum(nil)))
+	b.WriteString(fmt.Sprintf("%s%s", pagination.Limit, pagination.Offset))
+
+	hashCache := b.String()
+	if cacheinmem.Client.GetINuser(hashCache) == true {
+		asd := cacheinmem.Client.GetOutUser(hashCache)
+		c.JSON(http.StatusOK, asd)
+		return
+	}
 
 	if len(bytes) > 0 {
 
@@ -55,6 +75,9 @@ func Search(c *gin.Context) {
 		}
 	}
 	//
+
+	cacheinmem.Client.SetINuser(hashCache, query)
+	cacheinmem.Client.SettOutUser(hashCache, performancesFound)
 
 	c.JSON(http.StatusOK, performancesFound)
 

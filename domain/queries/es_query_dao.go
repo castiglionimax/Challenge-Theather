@@ -55,7 +55,7 @@ func (q EsQuery) BuildQuery() io.Reader {
 
 	b.WriteString("}\n")
 
-	//fmt.Printf(b.String())
+	fmt.Printf(b.String())
 	return strings.NewReader(b.String())
 }
 
