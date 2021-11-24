@@ -13,7 +13,7 @@
 - Las busquedas seran guardas en un in-memory cache con un hash en sha1 para posteriormente compararlas y obtener inequivocamente el resultado correcto, el cual tambien está cacheado.
 
 ## List of Endpoints
-- Base URL: Melishow-env.eba-mgripc2z.us-east-2.elasticbeanstalk.com
+- Base URL: MeliShows-Challenge-dev.us-west-1.elasticbeanstalk.com
 
 Path: /performaces/search
 Rest verb: POST
@@ -137,8 +137,8 @@ Rest verb: POST
 {
     "performanceID": 1,
     "person": {
-        "dni": 32523291,
-        "fullname": "Alexis Castiglioni"
+        "dni": 31113821,
+        "fullname": "Alfrey Molini"
     },
     "sold": [
         {
