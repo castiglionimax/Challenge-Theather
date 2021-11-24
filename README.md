@@ -78,14 +78,14 @@ POST /performaces/search
         "error": "internal_server",
         "status": 500
     }
+    
     - 404: StatusNotFound 
     {
-      
            "message": "error when trying to search documents",
             "error": "Not_Found_Error",
             "status": 404
-
     }
+    
     -  400:	StatusBadRequest  
 
   {
@@ -127,9 +127,10 @@ POST /bookings
 
 - Responses
     
-    ```
+    ```  
   - 200: Created
-{
+  
+  {
     "performanceID": 1,
     "person": {
         "dni": 31113821,
@@ -148,26 +149,22 @@ POST /bookings
         }
     ],
     "total_price": 410
-}
+    }
 
     -  400:	StatusBadRequest  
 
   {
-      
         "message": "invalid request body",
         "error": "bad_request",
         "status": 400
-
     }
       
     -  400:	StatusBadRequest  
 
-  {
-      
+  {   
         "message": "invalid json body",
         "error": "bad_request",
         "status": 400
-
     }
 
     
@@ -177,31 +174,32 @@ POST /bookings
         "error": "internal_server",
         "status": 500
     }
+    
     - 404: StatusNotFound 
-    {
-      
+    
+    {  
            "message": "error when trying to search documents",
             "error": "Not_Found_Error",
             "status": 404
-
     }
+    
     -  400:	StatusBadRequest  
 
   {
-      
         "message": invalid json body",
         "error": "bad_request",
         "status": 400
-
     }
-```
+    ```  
+
 ## Elasticsearch
-### Mapping
+
 - Es importante esto porque el array es del tipo nested
-```
-{
-    "mappings" : {
-      "properties" : {
+
+    ```
+    - Mapping
+    {"mappings" :{
+    "properties" : {
         "auditorium" : {
           "type" : "text",
           "fields" : {
@@ -297,13 +295,14 @@ POST /bookings
       }
     }
   }
-```
+    ```
+
 
 ## Documentos
 ### Peformance EXAMPLES
 
 ```
- {
+{
      "performanceID":1,
     "showID":1,
     "showName": "Aladdin",
