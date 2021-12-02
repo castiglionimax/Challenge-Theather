@@ -1,4 +1,4 @@
-# MeliShows-Challenge
+# Challenge
 
 ## Decisiones
 - El projecto fue desarrolado en Golang utilizado [Gin](https://github.com/gin-gonic/gin).
@@ -13,7 +13,7 @@
 - Las busquedas serán guardas en un in-memory cache con un hash en sha1 para posteriormente compararlas y obtener inequivocamente el resultado correcto, el cual tambien está cacheado.
 
 ## Listado de Endpoint
-- Base URL: MeliShows-Challenge-dev.us-west-1.elasticbeanstalk.com
+- Base URL: XXXXX-Challenge-dev.us-west-1.elasticbeanstalk.com
 
 POST /performaces/search
 
