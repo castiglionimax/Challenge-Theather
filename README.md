@@ -1,42 +1,67 @@
 # Challenge
+# Overview
 
-## Decisiones
-- El projecto fue desarrolado en Golang utilizado [Gin](https://github.com/gin-gonic/gin).
-- Se persiste los datos en base de datos MongoDB y se utiliza el conector [MongoDB Golang Driver](https://github.com/mongodb/mongo-go-driver).
-- Las busquedas se desarrollan en Elasticsearch y se utiliza el conector oficial [go-elasticsearch](https://github.com/elastic/go-elasticsearch).
-- Se realizó un in-memory cache con  [TTLCache](https://github.com/ReneKroon/ttlcache).
+This project was made as a challenge to the company that I applied to.
+I’ve kept the company name anonymous in order to protect confidential information. So, the following case is not the real one but an appreciation of it.
+# Introduction
 
-## Observaciones
-- Las busquedas se desarrollan en Elasticsearch y se persiste el documento de funciones en MongoDB.
-- Cada reserva se lo toma como una transaccion, por lo tanto si falla la actualización en Elasticserch o en MongoDB la reserva no se hace.
-- Se expone un endpoint que brinda mas flexibildad a la busqueda. Dejando la opcion de realizar más busquedas a futuro por nuevos criterios.
-- Las busquedas serán guardas en un in-memory cache con un hash en sha1 para posteriormente compararlas y obtener inequivocamente el resultado correcto, el cual tambien está cacheado.
+The goal is to build an API that contains all RESTful fundamentals according to the RFC 2616 HTTP/1.1 spec.
+The API is about managing theaters and booking different performances
+The API has two type of users:
 
-## Listado de Endpoint
+1. Who add data to the platform like new theaters, seats or even rooms
+2. From the front page, it’s used to book performance for customers.
+
+Note: A performance might have different prices for one or more sections. So, the same performance might have different prices.
+
+The portal must have the follow functionality:
+
+- Getting all shows and performances available.
+- Getting all seats and prices available for a specific performance.
+- Booking a performance by passport ID, first name and last name as a reserve.
+
+Note: It’s important to manage the use of cases when someone book a performance from who book the same performance, the API mustn’t allow it.
+Record data into the database might be omitted. So, It’s not necessary to have a public endpoint API with that functionality.
+
+Main goals were evaluated:
+
+- Add a functionality for search performances by dates, prices and the results should be ordered by descent as default but with the option of ascending according to some attribute.
+- Implement some functionality to improve the search base of most recently.
+- Host the API into a cloud provider (Google App Engine, Amazon AWS, Azure).
+
+## Decisions I took
+- The code was written in Golang using GIN [Gin](https://github.com/gin-gonic/gin).
+- The database selected was  MongoDB and the connector for Go was [MongoDB Golang Driver](https://github.com/mongodb/mongo-go-driver).
+- The functionality of searching was developed using Elasticseach and the connector for Golang was the official one. [go-elasticsearch](https://github.com/elastic/go-elasticsearch).
+-  In-memory cache was used to improve searches [TTLCache](https://github.com/ReneKroon/ttlcache).
+
+## To considered
+- Even though every single search showed performance using elaticsearch, the documents were saved on MondoDB as well.
+- When a customer wants to book a show, the functionality works as a transaction so if one is false the whole transaction is aborted.
+- The endpoint for search performance published had the possibility to manage enhanced search by attribute.
+- Even though I knew implementing in-memory cache was not the right call, I did it to accomplish that requirement (improve searching). If I had more time, I would have developed a distributed cache.
+
+
+## Endpoint List
 - Base URL: XXXXX-Challenge-dev.us-west-1.elasticbeanstalk.com
 
 POST /performaces/search
 
-#### Atributos 
-- Para obtener datos entre 1 a 50 hacer:
-- https://..../performances/search?limit=25&offset=50
-- offset= 1 ->  obtener el primer documento
-- limit= 50 ->  cantidad a devolver
-#### Atributos Body
-- "equals" Array
-- field: key con el nombre del atributo en el documento performances 
-- Value: valor buscado
+#### Attributes  
+- equals" Array
+- field: name of the attribute that you want to get
+- Value: value
 - "range_price"
-- from": precio inicial
-- "to":  precio final
-- "orderby": Array. Puede ordenar por mas de un atributo
-- "field": key con el nombre del atributo en el documento performances 
-- "value":"asc" para ascendente o "des" para descendente 
-- "Range_date":  en Timestamp
+- from": initial price
+- "to": final price
+- "orderby": Array. It could get more than one attribute
+- "field": name of the attribute that you want to get
+- "value":"asc" to ascended  o "des" to descended
+- "Range_date": Timestamp
 - "from":1632356338 (seg)
 - "to":1637616062
 	
-#### Ejemplos
+#### Examples
 
 - Body
 ```
@@ -298,7 +323,7 @@ POST /bookings
     ```
 
 
-## Documentos
+## Documents
 ### Peformance EXAMPLES
 
 ```
